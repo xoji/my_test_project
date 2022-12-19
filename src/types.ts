@@ -11,6 +11,7 @@ export interface Post {
 	title: string;
 	content: string;
 	rate: number;
+	read_speed: number;
 	author?: User;
 }
 

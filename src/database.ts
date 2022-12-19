@@ -15,6 +15,7 @@ interface Base {
 		content: string;
 		user_id: number;
 		rate: number;
+		read_speed: number;
 	}[];
 	rates: {
 		user_id: number;
@@ -67,6 +68,7 @@ export class Database {
 						title: post.title,
 						content: post.content,
 						rate: post.rate,
+						read_speed: post.read_speed,
 						author: {
 							id: user.id,
 							email: user.email,
@@ -89,6 +91,7 @@ export class Database {
 						title: post.title,
 						content: post.content,
 						rate: post.rate,
+						read_speed: post.read_speed,
 						author: {
 							id: user!.id,
 							email: user!.email,
@@ -112,7 +115,8 @@ export class Database {
 						id: value.id,
 						title: value.title,
 						content: value.content,
-						rate: value.rate
+						rate: value.rate,
+						read_speed: value.read_speed
 					}
 				});
 				users.push({
@@ -140,6 +144,7 @@ export class Database {
 			title: post.title,
 			content: post.content,
 			rate: post.rate,
+			read_speed: post.read_speed,
 			author: {
 				id: user!.id,
 				email: user!.email,
@@ -166,20 +171,24 @@ export class Database {
 			return undefined;
 		}
 
+		const words = params.content.split(" ");
+
 		const post: any = {
 			id: id + 1,
 			title: params.title,
 			content: params.content,
 			rate: 0,
-			user_id: params.user_id
+			user_id: params.user_id,
+			read_speed: parseFloat((words.length / 200).toFixed(1))
 		}
 		base.posts.push(post);
-		fs.writeFileSync(databasePath, JSON.stringify(base));
+		fs.writeFileSync(databasePath, JSON.stringify(base, null, 2));
 		return {
 			id: post.id,
 			title: post.title,
 			content: post.content,
 			rate: post.rate,
+			read_speed: post.read_speed,
 			author: {
 				id: author.id,
 				email: author.email,
@@ -225,6 +234,6 @@ export class Database {
 		base.users[base.users.findIndex((val) => {
 			return val.id == post!.user_id;
 		})].rate = user_rate / posts.length;
-		fs.writeFileSync(databasePath, JSON.stringify(base));
+		fs.writeFileSync(databasePath, JSON.stringify(base, null, 2));
 	}
 }
